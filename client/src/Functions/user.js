@@ -5,7 +5,7 @@ import { apiUrl, config } from '../Shared/config';
 
 export const getUserData = async () => {
   try {
-    const {data} = await axios.get(apiUrl + 'user/data', config);
+    const { data } = await axios.get(apiUrl + 'user/data', config);
 
     return data.success ? data : data?.error;
 
@@ -13,13 +13,13 @@ export const getUserData = async () => {
 };
 
 
-export const changePw = async () => {
+export const logout = async () => {
   try {
-    const {data} = await axios.post(apiUrl + 'user/change', null, config);
+    const { data } = await axios.get(apiUrl + 'user/logout', config);
 
-    return data.success ? data : data?.error;
-    
-  } catch (error) { return error.response?.data?.error || 'error'; }
+    return data;
+
+  } catch (error) { return error.response?.data?.error || 'logout'; }
 };
 
 
@@ -29,11 +29,11 @@ const imgurConfig = {
   },
 };
 
-export const postGifToImgur = async (data) => {
+export const postGifToImgur = async (image) => {
   try {
-    const res = await axios.post('https://api.imgur.com/3/image', data, imgurConfig);
+    const { data } = await axios.post('https://api.imgur.com/3/image', image, imgurConfig);
 
-    return res.data;
+    return data.success ? data : data?.error;
   }
 
   catch (error) {

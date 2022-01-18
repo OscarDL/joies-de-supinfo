@@ -7,7 +7,7 @@ import { Slide, ToastContainer } from 'react-toastify';
 
 import './App.css';
 import Header from './Shared/Header';
-import { logout } from '../Functions/auth';
+import { logout } from '../Functions/user';
 import { getUserData } from '../Functions/user';
 import { useAppContext } from '../Context/Provider';
 import LoggedInRoutes from '../Routes/LoggedInRoutes';

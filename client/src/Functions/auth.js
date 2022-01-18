@@ -3,9 +3,9 @@ import axios from 'axios';
 import { apiUrl, config } from '../Shared/config';
 
 
-export const login = async (user, remember) => {
+export const login = async (userLogin) => {
   try {
-    const {data} = await axios.post(apiUrl + 'user/login', {user, remember}, config);
+    const { data } = await axios.post(apiUrl + 'auth/login', userLogin, config);
 
     return data.success ? data : data?.error;
 
@@ -13,19 +13,19 @@ export const login = async (user, remember) => {
 };
 
 
-export const logout = async () => {
+export const register = async (userRegister) => {
   try {
-    const {data} = await axios.get(apiUrl + 'user/logout', config);
+    const { data } = await axios.post(apiUrl + 'auth/register', userRegister, config);
 
-    return data;
+    return data.success ? data : data?.error;
 
-  } catch (error) { return error.response?.data?.error || 'logout'; }
+  } catch (error) { return error.response?.data?.error || 'error'; }
 };
 
 
 export const forgotPw = async (email, lang) => {
   try {
-    const {data} = await axios.post(apiUrl + 'user/forgot', {email, lang}, config);
+    const { data } = await axios.post(apiUrl + 'auth/forgot', {email, lang}, config);
 
     return data.success ? data : data?.error;
     
@@ -35,7 +35,7 @@ export const forgotPw = async (email, lang) => {
 
 export const resetPw = async ({password, passcheck, code}) => {
   try {
-    const {data} = await axios.put(apiUrl + 'user/reset/' + code.replace(' ', ''), {password, passcheck}, config);
+    const { data } = await axios.put(apiUrl + 'auth/reset/' + code.replace(' ', ''), {password, passcheck}, config);
 
     return data.success ? data : data?.error;
     

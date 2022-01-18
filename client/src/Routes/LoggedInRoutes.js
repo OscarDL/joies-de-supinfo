@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 import Post from '../Components/Home/Post';
 import HomeList from '../Components/Home/List';

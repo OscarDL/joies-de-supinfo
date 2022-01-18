@@ -13,29 +13,34 @@ exports.register = async (req, res, next) => {
   if (!(email && password && passcheck))
     return next(new ErrorResponse('Remplissez tous les champs.', 400));
 
-  if (password.length < 8)
-    return next(new ErrorResponse('Le mot de passe nécessite au minimum 8 caractères.', 400));
+  if (!emailMatches(email.split('@')[0]))
+    return next(new ErrorResponse("L'adresse email entrée n'est pas valide.", 400));
 
   if (password !== passcheck)
     return next(new ErrorResponse('Les mots de passe entrés ne correspondent pas.', 400));
 
+  if (password.length < 8)
+    return next(new ErrorResponse('Le mot de passe nécessite au minimum 8 caractères.', 400));
+
   
   try {
     // Check uniqueness of email address
-    const exists = await User.findOne({email});
+    const newEmail = email.split('@')[0] + '@supinfo.com';
+
+    const exists = await User.findOne({email: newEmail});
     if (exists)
       return next(new ErrorResponse('Un compte avec cette adresse email existe déjà.', 409));
 
     const firstName = capitalize(email.split('.')[0]);
     const lastName = capitalize(email.split('.')[1].split('@')[0]);
 
-    const user = await User.create({email, firstName, lastName, password});
+    const user = await User.create({email: newEmail, firstName, lastName, password});
 
     const code = user.getActivationCode();
     await user.save();
 
     confirmEmail(user, code, res);
-    res.status(200).json({success: true});
+    res.status(200).json({success: true, email: newEmail});
   }
 
   catch (error) {
@@ -45,7 +50,8 @@ exports.register = async (req, res, next) => {
 
 
 exports.activate = async (req, res, next) => {
-  const activationCode = crypto.createHash('sha256').update(sanitize(req.body.code)).digest('hex');
+  const activationCode = crypto.createHash('sha256').update(sanitize(req.params.code)).digest('hex');
+
 
   try {
     const user = await User.findOne({
@@ -76,7 +82,7 @@ exports.activate = async (req, res, next) => {
 
 
 exports.login = async (req, res, next) => {
-  const { email, password } = sanitize(req.body);
+  const { email, password, remember } = sanitize(req.body);
 
   if (!email || !password)
     return next(new ErrorResponse('Veuillez entrer votre adresse email et mot de passe.', 400));
@@ -94,7 +100,7 @@ exports.login = async (req, res, next) => {
       return next(new ErrorResponse('Identifiants invalides.', 404));
 
     user.password = undefined;
-    sendJwt(user, 200, res);
+    sendJwt(user, remember, 200, res);
   }
 
   catch (error) {
@@ -149,7 +155,7 @@ exports.forgotpw = async (req, res, next) => {
 
 exports.resetpw = async (req, res, next) => {
   const { password, passcheck } = sanitize(req.body);
-  const resetPasswordCode = sanitize(req.params.resetCode);
+  const resetPasswordCode = sanitize(req.params.code);
 
   if (!password || !passcheck)
     return next(new ErrorResponse('Remplissez tous les champs.', 400));
@@ -205,11 +211,16 @@ const confirmEmail = (user, activationCode) => {
 };
 
 
-const sendJwt = (user, statusCode, res) => {
+const emailMatches = (email) => (
+  email.match(/^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/) || email.match(/^[0-9]{5,6}$/)
+);
+
+
+const sendJwt = (user, remember, statusCode, res) => {
   const token = user.getSignedJwt();
 
   res.cookie('authToken', token, {
-    expires: new Date(Date.now() + process.env.COOKIE_EXPIRES),
+    expires: remember ? new Date(Date.now() + process.env.COOKIE_EXPIRES) : false,
     sameSite: 'Strict',
     httpOnly: true,
     secure: true

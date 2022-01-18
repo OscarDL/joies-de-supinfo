@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     match: [
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@(["supinfo."]+["com"]{3})/, "invalid"
+      /^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+@[s][u][p][i][n][f][o]\.[c][o][m]$/, "invalid"
     ]
   },
 

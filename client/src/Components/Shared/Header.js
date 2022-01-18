@@ -18,7 +18,7 @@ export default function Header() {
               </Link>
             </h1>
 
-            <h2 className="text-sm leading-4">Les situations de la vie quotidienne des<br/>étudiants de SUPINFO</h2>
+            <h2 className="text-sm leading-4 max-w-fit">Les situations de la vie quotidienne des étudiants de SUPINFO</h2>
           </div>
         </div>
 
