@@ -1,13 +1,14 @@
 const express = require('express');
 
+const { fromWebsite, loggedIn } = require('../middleware/protected');
 const { userData, logout, deleteUser } = require('../controllers/user');
 
 
 const router = express.Router();
 
-router.route('/data').get(userData);
-router.route('/logout').get(logout);
-router.route('/delete').delete(deleteUser);
+router.route('/logout').get(fromWebsite, logout);
+router.route('/data').get(fromWebsite, loggedIn, userData);
+router.route('/delete').delete(fromWebsite, loggedIn, deleteUser);
 
 
 module.exports = router;

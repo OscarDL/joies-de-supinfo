@@ -31,7 +31,7 @@ export default function App() {
 
 
   return (
-    <div className="h-full" id="app">
+    <div className="w-full h-full" id="app">
       <Router>
         {user ? (
           <div className="container mx-auto p-5 flex flex-col h-full">
@@ -42,7 +42,7 @@ export default function App() {
             </main>
           </div>
         ) : (
-          <div className="flex items-center">
+          <div className="h-full grid place-items-center">
             <SyncLoader color="#7c3aed"/>
           </div>
         )}

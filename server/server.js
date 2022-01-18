@@ -52,6 +52,7 @@ process.env.NODE_ENV !== 'production' && app.use(require('cors')(corsOpts));
 app.use('/api/v1', rateLimiter);
 app.use('/api/v1/auth', require('./routes/auth'));
 app.use('/api/v1/user', require('./routes/user'));
+app.use('/api/v1/posts', require('./routes/posts'));
 
 
 // On Heroku, serve the React client as a static file

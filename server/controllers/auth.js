@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
 const sanitize = require('mongo-sanitize');
 
 const User = require('../models/User');
@@ -40,7 +39,7 @@ exports.register = async (req, res, next) => {
   }
 
   catch (error) {
-    next(new ErrorResponse('Une erreur est survenue.', 500));
+    next(new ErrorResponse('Erreur lors de la création de compte.', 500));
   };
 };
 
@@ -60,7 +59,7 @@ exports.activate = async (req, res, next) => {
 
       confirmEmail(user, code, res);
 
-      return next(new ErrorResponse("Le code d'activation est éronné ou a expiré. Un nouvel email a été envoyé avec un code d'activation différent.", 400));
+      return next(new ErrorResponse("Le lien d'activation est éronné ou a expiré. Un nouvel email a été envoyé avec un code d'activation différent.", 400));
     }
 
     user.activationCode = undefined;
@@ -71,7 +70,7 @@ exports.activate = async (req, res, next) => {
   }
 
   catch (error) {
-    next(new ErrorResponse('Une erreur est survenue.', 500));
+    next(new ErrorResponse("Erreur d'activation du compte.", 500));
   };
 };
 
@@ -99,7 +98,7 @@ exports.login = async (req, res, next) => {
   }
 
   catch (error) {
-    next(new ErrorResponse('Une erreur est survenue.', 500));
+    next(new ErrorResponse('Erreur de connexion.', 500));
   };
 };
 
@@ -119,18 +118,16 @@ exports.forgotpw = async (req, res, next) => {
 
     const content = `
       <h2>${user.firstName},</h2>
-      <h3>You requested a password reset.</h3><br/>
-      <p>Please copy this reset code back on the website:
-        <br/>${resetCode}
-      </p><br/>
-      <p>If the reset code matches, your account will be secured with your new password.</p>
-      <h4>Thank you for using our website and making your account more secure.</h4>
-      <p>SupWeather &copy; - 2021</p>
+      <h3>Vous avez effectué une demande de récupération de mot de passe.</h3><br/>
+      <p>Veuillez cliquer sur ce lien pour le réinitialiser :
+        <a href="${getDomain()}/reset/${resetCode}">Réinitialisation de mot de passe</a>
+      </p><br/><br/>
+      <p>${new Date(Date.now()).getFullYear()} - Joies de SUPINFO</p>
     `;
 
     try {
 
-      sendEmail({email: user.email, subject: 'SupWeather - Password Reset Request', content});
+      sendEmail({email: user.email, subject: 'Joies de SUPINFO - Réinitialisation de mot de passe', content});
 
       res.status(200).json({success: true});
 
@@ -140,19 +137,19 @@ exports.forgotpw = async (req, res, next) => {
       user.resetPasswordDate = undefined;
       await user.save();
      
-      return next(new ErrorResponse("Erreur d'envoi de l'email.", 400));
+      return next(new ErrorResponse("Erreur d'envoi de l'email.", 500));
     };
   }
 
   catch (error) {
-    next(new ErrorResponse('Une erreur est survenue.', 500));
+    next(new ErrorResponse("Erreur d'envoi de l'email.", 500));
   };
 };
 
 
 exports.resetpw = async (req, res, next) => {
   const { password, passcheck } = sanitize(req.body);
-  const resetPasswordCode = crypto.createHash('sha256').update(sanitize(req.params.resetCode)).digest('hex');
+  const resetPasswordCode = sanitize(req.params.resetCode);
 
   if (!password || !passcheck)
     return next(new ErrorResponse('Remplissez tous les champs.', 400));
@@ -171,7 +168,7 @@ exports.resetpw = async (req, res, next) => {
     });
 
     if (!user)
-      return next(new ErrorResponse('The token to reset your password is wrong or has expired. Please reset your password within 15 minutes of sending the reset request.', 400));
+      return next(new ErrorResponse("Le lien de réinitialisation est éronné ou a expiré. Un nouvel email a été envoyé avec un code d'activation différent.", 400));
 
     user.password = password;
     user.resetPasswordCode = undefined;
@@ -179,14 +176,11 @@ exports.resetpw = async (req, res, next) => {
 
     await user.save();
 
-    return res.status(201).json({
-      success: true,
-      data: 'Password reset successfully.'
-    });
+    return res.status(201).json({success: true});
   }
 
   catch (error) {
-    next(new ErrorResponse('Could not reset your password.', 401));
+    next(new ErrorResponse('Erreur de réinitialisation du mot de passe.', 500));
   };
 };
 
