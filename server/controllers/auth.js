@@ -224,9 +224,10 @@ const emailMatches = (email) => (
 
 const sendJwt = (user, remember, statusCode, res) => {
   const token = user.getSignedJwt();
+  console.log(Date.now() + process.env.COOKIE_EXPIRES)
 
   res.cookie('authToken', token, {
-    expires: remember ? new Date(Date.now() + process.env.COOKIE_EXPIRES) : false,
+    expires: remember ? new Date(Date.now() + Number(process.env.COOKIE_EXPIRES)) : false,
     sameSite: 'Strict',
     httpOnly: true,
     secure: true

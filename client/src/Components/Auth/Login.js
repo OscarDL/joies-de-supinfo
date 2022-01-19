@@ -43,7 +43,7 @@ export default function Login() {
 
 
   return (
-    <div className="flex flex-col justify-around items-center">
+    <div className="flex flex-col justify-around items-center h-full">
       <form className="flex flex-col items-stretch gap-3" onSubmit={handleLogin}>
         <div>
           <label className="pl-2 text-gray-700 text-sm font-medium mb-2" htmlFor="email">

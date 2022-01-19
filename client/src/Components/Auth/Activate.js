@@ -33,7 +33,7 @@ export default function Activate() {
 
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col justify-center items-center h-full">
       <h1 className="text-3xl mb-12">Votre compte a été créé mais n'est pas activé.</h1>
 
       <button onClick={handleActivate} disabled={loading} className="

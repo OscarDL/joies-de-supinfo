@@ -43,7 +43,7 @@ export default function Register() {
 
 
   return (
-    <div className="flex flex-col justify-around items-center">
+    <div className="flex flex-col justify-around items-center h-full">
       {registered ? (
         <div className="grid place-items-center">
           <h1 className="text-3xl mb-12">Votre compte a été créé mais n'est pas activé.</h1>
