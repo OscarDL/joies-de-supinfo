@@ -54,22 +54,24 @@ exports.activate = async (req, res, next) => {
 
 
   try {
-    const user = await User.findOne({
-      activationCode,
-      activationDate: {$gt: Date.now()} // Check if current time is still in the code expiration timeframe
-    });
+    const user = await User.findOne({activationCode});
 
-    if (!user) {
+    if (!user)
+      return next(new ErrorResponse("Le lien d'activation est éronné.", 400));
+
+    if (Date.now() > user.activationDate) {
       const code = user.getActivationCode();
       await user.save();
 
       confirmEmail(user, code, res);
 
-      return next(new ErrorResponse("Le lien d'activation est éronné ou a expiré. Un nouvel email a été envoyé avec un code d'activation différent.", 400));
+      return next(new ErrorResponse("Le lien d'activation a expiré. Un nouvel email a été envoyé avec un code d'activation différent.", 400));
     }
+
 
     user.activationCode = undefined;
     user.activationDate = undefined;
+    user.activated = false;
     await user.save();
 
     return res.status(201).json({success: true});
@@ -89,15 +91,19 @@ exports.login = async (req, res, next) => {
 
 
   try {
-    const user = await User.findOne({email}).select('+password');
+    const newEmail = email.split('@')[0] + '@supinfo.com';
+    const user = await User.findOne({email: newEmail}).select('+password');
 
-    if (!user)      
+    if (!user)
       return next(new ErrorResponse('Identifiants invalides.', 404));
 
     const isMatch = await user.matchPasswords(password);
 
     if(!isMatch)
       return next(new ErrorResponse('Identifiants invalides.', 404));
+
+    if (!user.activated)
+      return next(new ErrorResponse("Votre compte n'est pas activé.", 400));
 
     user.password = undefined;
     sendJwt(user, remember, 200, res);

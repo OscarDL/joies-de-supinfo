@@ -10,7 +10,7 @@ router.route('/login').post(fromWebsite, login);
 router.route('/forgot').post(fromWebsite, forgotpw);
 router.route('/register').post(fromWebsite, register);
 router.route('/reset/:code').put(fromWebsite, resetpw);
-router.route('/activate/:code').post(fromWebsite, activate);
+router.route('/activate/:code').put(fromWebsite, activate);
 
 
 module.exports = router;

@@ -21,7 +21,7 @@ export default function LoggedOutRoutes() {
       </Route>
 
       {/* Redirect to home page if route doesn't exist */}
-      <Route element={<Navigate replace to="/"/>}/>
+      <Route path="*" element={<Navigate replace to="/"/>}/>
     </Routes>
   );
 }

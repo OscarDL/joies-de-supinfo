@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 
 import Login from '../Components/Auth/Login';
 import Register from '../Components/Auth/Register';
+import Activate from '../Components/Auth/Activate';
 
 import HomeList from '../Components/Home/List';
 import RandomGif from '../Components/Home/Random';
@@ -20,11 +21,13 @@ export default function LoggedOutRoutes() {
 
         <Route path="register" element={<Register/>}/>
 
+        <Route path="activate/:code" element={<Activate/>}/>
+
         <Route path="submit" element={<Navigate replace to="/login"/>}/>
       </Route>
 
       {/* Redirect to home page if route doesn't exist */}
-      <Route element={<Navigate replace to="/"/>}/>
+      <Route path="*" element={<Navigate replace to="/"/>}/>
     </Routes>
   );
 }

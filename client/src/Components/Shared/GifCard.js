@@ -15,7 +15,7 @@ export default function GifCard({gif}) {
         <h1 className="text-xl">{gif.title}</h1>
 
         <button className="
-          rounded-sm transition duration-300 flex
+          rounded transition duration-300 flex
           hover:bg-opacity-20 hover:bg-gray-400
         ">
           <span className="material-icons p-1">more_vert</span>

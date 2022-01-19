@@ -50,7 +50,7 @@ export default function Submit() {
           type="text"
           value={upload.title}
           placeholder="Quand on te dit &quot;pas de dates&quot;"
-          className="border-2 rounded-sm w-full py-2 px-3 text-gray-700"
+          className="border-2 rounded w-full py-2 px-3 text-gray-700"
           onChange={e => setUpload({...upload, title: e.target.value})}
         />
       </div>
@@ -73,7 +73,7 @@ export default function Submit() {
       </div>
 
       <button onClick={uploadGif} className="
-        flex items-center rounded-sm text-sm px-2 py-1 ease-in-out duration-300
+        flex items-center rounded text-sm px-2 py-1 ease-in-out duration-300
         focus:ring-2 focus:ring-violet-300 bg-violet-600 hover:bg-violet-700 text-white
       ">
         <span className="material-icons pr-2">save</span>METTRE EN LIGNE
