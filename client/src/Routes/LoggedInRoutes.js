@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import Post from '../Components/Home/Post';
-import HomeList from '../Components/Home/List';
+import Posts from '../Components/Home/Posts';
 import RandomGif from '../Components/Home/Random';
 import SubmitGif from '../Components/Home/Submit';
 
@@ -11,7 +11,7 @@ export default function LoggedOutRoutes() {
   return (
     <Routes>
       <Route path="/">
-        <Route index element={<HomeList/>}/>
+        <Route index element={<Posts/>}/>
 
         <Route path="post/:id" element={<Post/>}/>
 

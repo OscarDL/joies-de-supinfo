@@ -1,30 +1,47 @@
+import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 import { SyncLoader } from 'react-spinners';
 import React, { useEffect, useState } from 'react';
 
-import GifCard from '../Shared/GifCard';
+import PostCard from '../Shared/PostCard';
+import { getRandomPost } from '../../Functions/posts';
 
 
 export default function Random() {
-  const [gif, setGif] = useState(null);
+  const [post, setPost] = useState(null);
+
 
   useEffect(() => {
-    if (!gif) {
-      // Retrieve a random gif
-      // setGif(randomGif);
+    if (!post) {
+      getRandomPost().then(res => {
+        if (!res.success) return toast(res, {type: 'error'});
+
+        setPost(res.post);
+        if (res.post.title) document.title = res.post.title;
+      });
     }
-  }, [gif]);
+  }, [post]);
 
 
-  return gif ? (
+  return post ? (
     <div className="flex flex-col justify-center items-center gap-12">
-      <GifCard gif={gif}/>
+      {post.id ? <PostCard post={post}/> : <h1 className="text-2xl">Aucun post à afficher.</h1>}
 
-      <button onClick={() => setGif(null)} className="
-        flex items-center rounded text-sm px-2 py-1 ease-in-out duration-300
-        focus:ring-2 focus:ring-violet-300 bg-violet-600 hover:bg-violet-700 text-white
-      ">
-        <span className="material-icons pr-2">cached</span>AUTRE GIF AU HASARD
-      </button>
+      {post.id ? (
+        <button onClick={() => setPost(null)} className="
+          flex items-center rounded text-sm px-2 py-1 ease-in-out duration-300
+          focus:ring-2 focus:ring-violet-300 bg-violet-600 hover:bg-violet-700 text-white
+        ">
+          <span className="material-icons pr-2">cached</span>AUTRE GIF AU HASARD
+        </button>
+      ) : (
+        <Link to="/submit" className="
+          flex items-center rounded text-sm px-2 py-1 ease-in-out duration-300
+          focus:ring-2 focus:ring-violet-300 bg-violet-600 hover:bg-violet-700 text-white
+        ">
+          <span className="material-icons pr-2">cloud_upload</span>SOUMETTRE UN POST
+        </Link>
+      )}
     </div>
   ) : (
     <div className="flex items-center">

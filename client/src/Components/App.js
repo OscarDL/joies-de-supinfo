@@ -37,7 +37,7 @@ export default function App() {
           <div className="container mx-auto p-5 flex flex-col h-full">
             <Header/>
 
-            <main className="overflow-auto flex justify-center flex-grow bg-white rounded-b gap-4">
+            <main className="relative overflow-auto grid flex-grow place-items-center bg-white rounded-b gap-4 py-4">
               {user._id ? <LoggedInRoutes/> : <LoggedOutRoutes/>}
             </main>
           </div>

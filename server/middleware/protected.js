@@ -25,15 +25,17 @@ exports.loggedIn = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
-
-    if (!user) {
+    
+    if (!user)
       return next(new ErrorResponse('Erreur de récupération des données, veuillez vous reconnecter.', 403));
-    }
 
     req.user = user;
   }
-
+  
   catch (error) {
     return next(new ErrorResponse('Une erreur est survenue.', 500));
   };
+
+
+  next();
 };

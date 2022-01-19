@@ -83,7 +83,6 @@ if (process.env.NODE_ENV === 'production') {
   
   process.on('unhandledRejection', (error, _) => {
     console.log('Logged Error: ' + error);
-    server.close(() => process.exit(1));
   });
 
 }

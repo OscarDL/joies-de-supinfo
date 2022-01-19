@@ -5,6 +5,11 @@ const { genSalt, hash, compare } = require('bcrypt');
 
 
 const UserSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    required: true
+  },
+
   email: {
     type: String,
     required: true,

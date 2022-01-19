@@ -5,7 +5,7 @@ import Login from '../Components/Auth/Login';
 import Register from '../Components/Auth/Register';
 import Activate from '../Components/Auth/Activate';
 
-import HomeList from '../Components/Home/List';
+import Posts from '../Components/Home/Posts';
 import RandomGif from '../Components/Home/Random';
 
 
@@ -13,7 +13,7 @@ export default function LoggedOutRoutes() {
   return (
     <Routes>
       <Route path="/">
-        <Route index element={<HomeList/>}/>
+        <Route index element={<Posts/>}/>
 
         <Route path="random" element={<RandomGif/>}/>
 

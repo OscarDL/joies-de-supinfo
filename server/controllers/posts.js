@@ -1,18 +1,20 @@
+const sanitize = require('mongo-sanitize');
+
 const Post = require('../models/Post');
 const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
 
 
-exports.list = async (req, res, next) => {
+exports.posts = async (req, res, next) => {
   try {
-    const gifs = await Post.find();
+    const posts = await Post.find();
 
-    for (let i = 0; i < gifs.length; i++) {
-      const user = await User.findById(gifs[i].user);
-      gifs[i].user = `${user.firstName} ${user.lastName[0]}`;
+    for (let i = 0; i < posts.length; i++) {
+      const user = await User.findById(posts[i].user);
+      posts[i].user = `${user.firstName} ${user.lastName[0]}`;
     }
 
-    return res.status(200).json({success: true, list: gifs});
+    return res.status(200).json({success: true, posts});
   }
 
   catch (error) {
@@ -26,7 +28,7 @@ exports.post = async (req, res, next) => {
 
 
   try {
-    const post = await Post.findById(id);
+    const post = await Post.findOne({id});
 
     const user = await User.findById(post.user);
     post.user = `${user.firstName} ${user.lastName[0]}`;
@@ -42,14 +44,15 @@ exports.post = async (req, res, next) => {
 
 exports.random = async (req, res, next) => {
   try {
-    const gifs = await Post.find();
+    const posts = await Post.find();
+    const randomPost = posts[Math.floor(Math.random() * posts.length)] ?? {};
 
-    const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+    if (randomPost.id) {
+      const user = await User.findById(randomPost.user);
+      randomPost.user = `${user.firstName} ${user.lastName[0]}`;
+    }
 
-    const user = await User.findById(randomGif.user);
-    randomGif.user = `${user.firstName} ${user.lastName[0]}`;
-
-    return res.status(200).json({success: true, gif: randomGif});
+    return res.status(200).json({success: true, post: randomPost});
   }
 
   catch (error) {
@@ -63,7 +66,7 @@ exports.submit = async (req, res, next) => {
 
 
   try {
-    const post = Post.create({_id: id, user, title, link, datetime});
+    const post = Post.create({id: id, user, title, link, datetime});
 
     return res.status(200).json({success: true, post});
   }
