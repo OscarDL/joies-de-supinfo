@@ -35,7 +35,7 @@ export const getRandomPost = async () => {
 
 export const submitPost = async (post) => {
   try {
-    const { data } = await axios.post(apiUrl + 'posts', post, config);
+    const { data } = await axios.post(apiUrl + 'posts/submit', post, config);
 
     return data.success ? data : data?.error;
 
