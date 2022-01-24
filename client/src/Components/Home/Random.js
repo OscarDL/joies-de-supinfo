@@ -25,9 +25,9 @@ export default function Random() {
 
   return post ? (
     <div className="flex flex-col justify-center items-center gap-12">
-      {post.id ? <PostCard post={post}/> : <h1 className="text-2xl">Aucun post à afficher.</h1>}
+      {post._id ? <PostCard post={post}/> : <h1 className="text-2xl">Aucun post à afficher.</h1>}
 
-      {post.id ? (
+      {post._id ? (
         <button onClick={() => setPost(null)} className="
           flex items-center rounded text-sm px-2 py-1 ease-in-out duration-300
           focus:ring-2 focus:ring-violet-300 bg-violet-600 hover:bg-violet-700 text-white
