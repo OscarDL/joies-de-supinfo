@@ -22,11 +22,27 @@ export default function Submit() {
 
   const updateImage = (e) => {
     const image = e.target.files[0];
-    setUpload({ ...upload, image });
-
     const imageCard = document.getElementById('image-card');
 
+
     if (image) {
+      const names = image.name.split('.');
+      const extension = names[names.length - 1];
+
+      if (['gif', 'png', 'jpg', 'jpeg'].includes(extension)) {
+        setUpload({ ...upload, image });
+      }
+      else {
+        setUpload({ ...upload, image: null });
+
+        imageCard.style.aspectRatio = '';
+        imageCard.style.backgroundImage = '';
+        imageCard.classList.remove('has-image');
+
+        return toast('Veuillez choisir un format valide.', {type: 'error'});
+      }
+
+
       var reader = new FileReader();
 
       reader.onload = (e) => {
@@ -46,6 +62,8 @@ export default function Submit() {
 
       reader.readAsDataURL(image);
     } else {
+      setUpload({...upload, image: null});
+
       imageCard.style.aspectRatio = '';
       imageCard.style.backgroundImage = '';
       imageCard.classList.remove('has-image');

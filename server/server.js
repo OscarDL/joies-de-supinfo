@@ -26,7 +26,7 @@ const corsOpts = {
 };
 
 const rateLimiter = rateLimit({
-  windowMs: 600000, // 10 minutes
+  windowMs: 60000, // 60 seconds
   max: 100 // 100 requests at max
 });
 
@@ -37,8 +37,8 @@ app.use(helmet.contentSecurityPolicy({
     styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com'],
     scriptSrc: ["'self'", "'unsafe-inline'"],
     fontSrc: ["'self'", 'fonts.gstatic.com'],
-    imgSrc: ["'self'", 'openweathermap.org'],
-    connectSrc: ["'self'", 'api.ipify.org', 'ipv4.icanhazip.com', 'api.openweathermap.org']
+    imgSrc: ["'self'", '*.imgur.com', 'data:'],
+    connectSrc: ["'self'", '*.imgur.com']
   },
 }));
 
@@ -54,17 +54,20 @@ app.use('/api/v1/auth', require('./routes/auth'));
 app.use('/api/v1/user', require('./routes/user'));
 app.use('/api/v1/posts', require('./routes/posts'));
 
-
-// On Heroku, serve the React client as a static file
-app.use(express.static(path.join(__dirname, 'client', 'build')));
-process.env.NODE_ENV === 'production' && app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'client', 'build', 'index.html')));
-
-
 app.use(errorHandler); // needs to be last middleware
 
 
 // server startup
 if (process.env.NODE_ENV === 'production') {
+
+  app.use((req, res, next) => {
+    // Fix COEP issue loading imgur resources
+    res.header('Cross-Origin-Embedder-Policy', 'credentialless');
+    next();
+  });
+
+  app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
+  app.get('*', (req, res) => res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html')));
 
   app.listen(port);
 
@@ -79,7 +82,7 @@ if (process.env.NODE_ENV === 'production') {
   const credentials = {key: key, cert: cert};
 
   const httpsServer = https.createServer(credentials, app);
-  const server = httpsServer.listen(port, () => console.log('Listening on port ' + port));
+  httpsServer.listen(port, () => console.log('Listening on port ' + port));
   
   process.on('unhandledRejection', (error, _) => {
     console.log('Logged Error: ' + error);
