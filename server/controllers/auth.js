@@ -31,8 +31,14 @@ exports.register = async (req, res, next) => {
     if (exists)
       return next(new ErrorResponse('Un compte avec cette adresse email existe déjà.', 409));
 
-    const firstName = capitalize(email.split('.')[0]);
-    const lastName = capitalize(email.split('.')[1].split('@')[0]);
+    let firstName, lastName;
+    if (email.split('@')[0].includes('.')) {
+      firstName = capitalize(email.split('.')[0]);
+      lastName = capitalize(email.split('.')[1].split('@')[0]);
+    } else {
+      firstName = 'Utilisateur inconnu';
+      lastName = '\x20';
+    }
 
     const user = await User.create({email: newEmail, firstName, lastName, password});
 
@@ -71,7 +77,7 @@ exports.activate = async (req, res, next) => {
 
     user.activationCode = undefined;
     user.activationDate = undefined;
-    user.activated = false;
+    user.activated = true;
     await user.save();
 
     return res.status(201).json({success: true});
@@ -218,13 +224,12 @@ const confirmEmail = (user, activationCode) => {
 
 
 const emailMatches = (email) => (
-  email.match(/^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/) || email.match(/^[0-9]{5,6}$/)
+  email.match(/^(([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+)|([0-9]{5,6}))$/)
 );
 
 
 const sendJwt = (user, remember, statusCode, res) => {
   const token = user.getSignedJwt();
-  console.log(Date.now() + process.env.COOKIE_EXPIRES)
 
   res.cookie('authToken', token, {
     expires: remember ? new Date(Date.now() + Number(process.env.COOKIE_EXPIRES)) : false,

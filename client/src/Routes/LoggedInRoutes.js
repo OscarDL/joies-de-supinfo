@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 
 import Post from '../Components/Home/Post';
 import Posts from '../Components/Home/Posts';
+import Profile from '../Components/Home/Profile';
 import RandomGif from '../Components/Home/Random';
 import SubmitGif from '../Components/Home/Submit';
 
@@ -18,6 +19,8 @@ export default function LoggedOutRoutes() {
         <Route path="random" element={<RandomGif/>}/>
 
         <Route path="submit" element={<SubmitGif/>}/>
+
+        <Route path="profile/:id" element={<Profile/>}/>
       </Route>
 
       {/* Redirect to home page if route doesn't exist */}

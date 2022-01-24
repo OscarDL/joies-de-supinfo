@@ -13,6 +13,11 @@ import { useAppContext } from '../Context/Provider';
 import LoggedInRoutes from '../Routes/LoggedInRoutes';
 import LoggedOutRoutes from '../Routes/LoggedOutRoutes';
 
+import TimeAgo from 'javascript-time-ago';
+import fr from 'javascript-time-ago/locale/fr.json';
+
+TimeAgo.addDefaultLocale(fr);
+
 
 export default function App() {
   const [{user}, dispatch] = useAppContext();

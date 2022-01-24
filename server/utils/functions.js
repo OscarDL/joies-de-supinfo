@@ -7,7 +7,7 @@ exports.capitalize = (string) => (
 
 
 exports.getDomain = () => {
-  if (process.env.NODE_ENV === 'production') return 'https://joies-de-supinfo.web.app';
+  if (process.env.NODE_ENV === 'production') return 'https://joies-de-supinfo.herokuapp.com';
   return 'https://localhost:3000';
 };
 

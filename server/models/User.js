@@ -5,16 +5,11 @@ const { genSalt, hash, compare } = require('bcrypt');
 
 
 const UserSchema = new mongoose.Schema({
-  id: {
-    type: String,
-    required: true
-  },
-
   email: {
     type: String,
     required: true,
     match: [
-      /^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+@[s][u][p][i][n][f][o]\.[c][o][m]$/, "invalid"
+      /^(([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+)|([0-9]{5,6}))@[s][u][p][i][n][f][o]\.[c][o][m]$/, "invalid"
     ]
   },
 
@@ -26,11 +21,6 @@ const UserSchema = new mongoose.Schema({
     minlength: 8,
     select: false,
     required: true
-  },
-
-  gifs: {
-    type: Array,
-    default: []
   },
 
   activated: {

@@ -9,7 +9,11 @@ export const getUserData = async () => {
 
     return data.success ? data : data?.error;
 
-  } catch (error) { localStorage.removeItem('signedIn'); return error; }
+  }
+
+  catch (error) {
+    localStorage.removeItem('signedIn'); return error;
+  }
 };
 
 
@@ -19,7 +23,25 @@ export const logout = async () => {
 
     return data;
 
-  } catch (error) { return error.response?.data?.error || 'logout'; }
+  }
+
+  catch (error) {
+    return error.response?.data?.error || 'error';
+  }
+};
+
+
+export const getProfile = async (id) => {
+  try {
+    const { data } = await axios.get(apiUrl + 'user/profile/' + id, config);
+
+    return data.success ? data : data?.error;
+
+  }
+
+  catch (error) {
+    return error.response?.data?.error || 'error';
+  }
 };
 
 

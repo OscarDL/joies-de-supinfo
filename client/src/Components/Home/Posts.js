@@ -25,7 +25,7 @@ export default function Posts() {
     posts ? (
       <div className="flex flex-col justify-start max-w-screen-sm gap-6">
         {posts.sort((a, b) => b.datetime - a.datetime).map((post, i) => (
-          <React.Fragment key={post.id}>
+          <React.Fragment key={post._id}>
             {i > 0 && <hr/>}
 
             <PostCard post={post}/>

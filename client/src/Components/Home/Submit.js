@@ -94,7 +94,6 @@ export default function Submit() {
     const post = {
       user: upload.user,
       title: upload.title,
-      id: imgurRes?.data?.id,
       link: imgurRes?.data?.link,
       datetime: imgurRes?.data?.datetime
     };

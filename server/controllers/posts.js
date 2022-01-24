@@ -7,11 +7,11 @@ const ErrorResponse = require('../utils/errorResponse');
 
 exports.posts = async (req, res, next) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().lean();
 
     for (let i = 0; i < posts.length; i++) {
       const user = await User.findById(posts[i].user);
-      posts[i].user = `${user.firstName} ${user.lastName[0]}`;
+      posts[i].username = `${user.firstName} ${user.lastName[0]}`;
     }
 
     return res.status(200).json({success: true, posts});
@@ -28,10 +28,9 @@ exports.post = async (req, res, next) => {
 
 
   try {
-    const post = await Post.findOne({id});
-
+    const post = await Post.findById(id).lean();
     const user = await User.findById(post.user);
-    post.user = `${user.firstName} ${user.lastName[0]}`;
+    post.username = `${user.firstName} ${user.lastName[0]}`;
 
     return res.status(200).json({success: true, post});
   }
@@ -44,15 +43,15 @@ exports.post = async (req, res, next) => {
 
 exports.random = async (req, res, next) => {
   try {
-    const posts = await Post.find();
-    const randomPost = posts[Math.floor(Math.random() * posts.length)] ?? {};
+    const posts = await Post.find().lean();
+    const post = posts[Math.floor(Math.random() * posts.length)] ?? {};
 
-    if (randomPost.id) {
-      const user = await User.findById(randomPost.user);
-      randomPost.user = `${user.firstName} ${user.lastName[0]}`;
+    if (post._id) {
+      const user = await User.findById(post.user);
+      post.username = `${user.firstName} ${user.lastName[0]}`;
     }
 
-    return res.status(200).json({success: true, post: randomPost});
+    return res.status(200).json({success: true, post});
   }
 
   catch (error) {
@@ -62,11 +61,13 @@ exports.random = async (req, res, next) => {
 
 
 exports.submit = async (req, res, next) => {
-  const { id, user, title, link, datetime } = sanitize(req.body);
+  const { user, title, link, datetime } = sanitize(req.body);
 
 
   try {
-    const post = Post.create({id: id, user, title, link, datetime});
+    const post = await Post.create({user, title, link, datetime});
+    req.user.posts.push(post._id);
+    await req.user.save();
 
     return res.status(200).json({success: true, post});
   }

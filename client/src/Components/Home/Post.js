@@ -1,10 +1,10 @@
 import { toast } from 'react-toastify';
 import { SyncLoader } from 'react-spinners';
 import React, { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
-import { getPost } from '../../Functions/posts';
 import PostCard from '../Shared/PostCard';
+import { getPost } from '../../Functions/posts';
 
 
 export default function Post() {
@@ -26,7 +26,18 @@ export default function Post() {
 
   return (
     <div>
-      {post ? <PostCard post={post}/> : (
+      {post ? (
+        <div className="flex flex-col justify-center items-center gap-12">
+          <PostCard post={post}/>
+
+          <Link to="/" className="
+            flex items-center rounded text-sm px-2 py-1 ease-in-out duration-300
+            focus:ring-2 focus:ring-violet-300 bg-violet-600 hover:bg-violet-700 text-white
+          ">
+            <span className="material-icons-round pr-2">chevron_left</span>RETOUR AUX POSTS
+          </Link>
+        </div>
+      ) : (
         <div className="grid place-items-center">
           <SyncLoader loading color='#7c3aed'/>
         </div>
