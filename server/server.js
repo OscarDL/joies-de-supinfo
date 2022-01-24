@@ -37,8 +37,8 @@ app.use(helmet.contentSecurityPolicy({
     styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com'],
     scriptSrc: ["'self'", "'unsafe-inline'"],
     fontSrc: ["'self'", 'fonts.gstatic.com'],
-    imgSrc: ["'self'", '*.imgur.com', 'data:'],
-    connectSrc: ["'self'", '*.imgur.com']
+    imgSrc: ["'self'", 'i.imgur.com', 'data:'],
+    connectSrc: ["'self'", 'api.imgur.com']
   },
 }));
 
